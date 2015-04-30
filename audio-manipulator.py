@@ -41,12 +41,12 @@ ave_amp = np.array(ave_amp)
 print np.array(ave_amp)
 ave_freq = scipy.fftpack.rfft(ave_amp)
 
-plt.plot(list(range(len(ave_amp))), ave_amp, 'ro')
-plt.show()
-plt.plot(list(range(len(ave_freq))), ave_freq, 'ro')
-plt.show()
-plt.plot(list(range(len(frequency))), frequency, 'ro')
-plt.show()
+#plt.plot(list(range(len(ave_amp))), ave_amp, 'ro')
+#plt.show()
+#plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
+#plt.show()
+#plt.plot(scipy.fftpack.fftfreq(len(frequency), 1.0 / rate), frequency, 'ro')
+#plt.show()
 
 #print amplitude.real
 #print frequency
@@ -54,44 +54,47 @@ plt.show()
 #print read_audio.getframerate()
 
 # Clamps our frequency to under 200 kHz
-v = 0
-while v < len(ave_freq):
-	if ave_freq[v] > 200000:
-		ave_freq[v] -= (ave_freq[v] + 200000)
-	elif ave_freq[v] < -200000:
-		ave_freq[v] -= (ave_freq[v] - 200000)
-	v += 1
+# v = 0
+# while v < len(ave_freq):
+# 	if ave_freq[v] > 200000:
+# 		ave_freq[v] -= (ave_freq[v] + 200000)
+# 	elif ave_freq[v] < -200000:
+# 		ave_freq[v] -= (ave_freq[v] - 200000)
+# 	v += 1
 
-output_amp = scipy.fftpack.irfft([ave_freq])[0]
-output_amp = np.array(output_amp)
-#print output_amp
-#plt.plot(list(range(len(output_amp))), output_amp, 'ro')
+#plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
 #plt.show()
 
 
-
-
-
-
-
-
-
-
-
-# if true:
-# 	play female voice
-# elif true 
-# 	play male voice
-# elif true
-# 	play original
-# else
-# 	print please choose an option.
-# 	
+frequencies = scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate) # Hertz
+voice = raw_input('Which voice would you like to listen to? Male, Female, Both\n')
+if voice == 'Male':
+	# This loop was based on code written by Brady Garvin.
+	for i in range(frames):
+		if abs(frequencies[i]) > 1000:
+			ave_freq[i] = 0
+		else:
+			ave_freq[i] = ave_freq[i] * 5
+elif voice == 'Female':
+	# This loop was based on code written by Brady Garvin.
+	for i in range(frames):
+		if abs(frequencies[i]) > 50 and abs(frequencies[i]) < 3000:
+			ave_freq[i] = 0
+		else: 
+			ave_freq[i] = ave_freq[i] * 5
+elif voice == 'Both':
+	ave_freq = ave_freq
+else:
+	print 'Try again'
 	
+plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
+plt.show()
 
 
-
-
+output_amp = scipy.fftpack.irfft([ave_freq])[0]
+output_amp = np.array(output_amp)
+output_amp = scipy.fftpack.irfft([ave_freq])[0]
+output_amp = np.array(output_amp)
 
 
 write_audio = aifc.open("M1F1-mulawC-AFsp_output.aif","wb")
@@ -99,5 +102,5 @@ write_audio.setnchannels(1)
 write_audio.setsampwidth(samplewidth)
 write_audio.setframerate(rate)
 write_audio.setcomptype(read_audio.getcomptype(), read_audio.getcomptype())
-write_audio.writeframes(ave_amp.astype(np.int16).tostring())
+write_audio.writeframes(output_amp.astype(np.int16).tostring())
 write_audio.close()
