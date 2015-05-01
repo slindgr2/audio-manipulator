@@ -38,40 +38,15 @@ while k < len(amplitude) -1 and z < len(amplitude):
 	z += 2
 
 ave_amp = np.array(ave_amp)	
-print np.array(ave_amp)
 ave_freq = scipy.fftpack.rfft(ave_amp)
 
-#plt.plot(list(range(len(ave_amp))), ave_amp, 'ro')
-#plt.show()
-#plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
-#plt.show()
-#plt.plot(scipy.fftpack.fftfreq(len(frequency), 1.0 / rate), frequency, 'ro')
-#plt.show()
-
-#print amplitude.real
-#print frequency
-#print read_audio.getnframes() 
-#print read_audio.getframerate()
-
-# Clamps our frequency to under 200 kHz
-# v = 0
-# while v < len(ave_freq):
-# 	if ave_freq[v] > 200000:
-# 		ave_freq[v] -= (ave_freq[v] + 200000)
-# 	elif ave_freq[v] < -200000:
-# 		ave_freq[v] -= (ave_freq[v] - 200000)
-# 	v += 1
-
-#plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
-#plt.show()
-
-
+#This code filters out either the male or female voice depending on the user prompt. It also has the option to listen to both at the same time
 frequencies = scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate) # Hertz
 voice = raw_input('Which voice would you like to listen to? Male, Female, Both\n')
 if voice == 'Male':
 	# This loop was based on code written by Brady Garvin.
 	for i in range(frames):
-		if abs(frequencies[i]) > 1000:
+		if abs(frequencies[i]) > 1500:
 			ave_freq[i] = 0
 		else:
 			ave_freq[i] = ave_freq[i] * 5
@@ -86,17 +61,12 @@ elif voice == 'Both':
 	ave_freq = ave_freq
 else:
 	print 'Try again'
-	
-plt.plot(scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate), ave_freq, 'ro')
-plt.show()
 
-
-output_amp = scipy.fftpack.irfft([ave_freq])[0]
-output_amp = np.array(output_amp)
+#This code converts our manipulated frequencies back into corresponding amplitudes.
 output_amp = scipy.fftpack.irfft([ave_freq])[0]
 output_amp = np.array(output_amp)
 
-
+#This code writes our manipulated audio file so that it can be played though a media player.
 write_audio = aifc.open("M1F1-mulawC-AFsp_output.aif","wb")
 write_audio.setnchannels(1)
 write_audio.setsampwidth(samplewidth)
