@@ -40,18 +40,21 @@ while k < len(amplitude) -1 and z < len(amplitude):
 ave_amp = np.array(ave_amp)	
 ave_freq = scipy.fftpack.rfft(ave_amp)
 
-#This code filters out either the male or female voice depending on the user prompt. It also has the option to listen to both at the same time
+"""
+Function: voice 'voice loop'
+Variables: frequencies
+Meaning: This code filters out either the male or female voice depending on the user prompt. It also has the option to listen to both at the same time. This is done by using a range of frequencies the lower ranger of frequencies is the male voice and the higher range is the female voice. These loops are based off of code written by professor Brady Garvin.
+Invariants: The audio file must be a stereo file meaning that it has two channes (n = 2). 
+"""
 frequencies = scipy.fftpack.fftfreq(len(ave_amp), 1.0 / rate) # Hertz
 voice = raw_input('Which voice would you like to listen to? Male, Female, Both\n')
 if voice == 'Male':
-	# This loop was based on code written by Brady Garvin.
 	for i in range(frames):
 		if abs(frequencies[i]) > 1500:
 			ave_freq[i] = 0
 		else:
 			ave_freq[i] = ave_freq[i] * 5
 elif voice == 'Female':
-	# This loop was based on code written by Brady Garvin.
 	for i in range(frames):
 		if abs(frequencies[i]) > 50 and abs(frequencies[i]) < 3000:
 			ave_freq[i] = 0
