@@ -1,3 +1,3 @@
 # audio-manipulator
-Project to isolate background noise, and clean up sound quality.
-We will be taking an audio file, and separating the frequencies. Next we will write code to take two roads, one which will amplify the background noise and cancel out the main sound, the other will try to improve the audio quality by predicting patterns in the sound waves.
+Project to manipulate a stereo audio file to separate voices of people talking simultaneously. It works when there are male and female voices.
+We will be taking an audio file, and filtering the frequencies. The code has a user prompt presented with three options once a stereo audio file has been uploaded. The first option will amplify the male voice and cancel out the female voice, the next option will amplify the female voice and cancel out the male voice. The last option will allow the user to listen to both the male and female voice together simultaneously. The audio file loaded must be a stereo audio file meaning that it has n = 2 channels otherwise the code will not run. The output file will be created in the audio-manipulator file and will have _output after the file name. 
